@@ -10,24 +10,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 
 @Service
 public class SolarWatchService {
+    private static final Logger logger = LoggerFactory.getLogger(SolarWatchService.class);
 
     @Value("${GEOCODING_KEY}")
     private String API_KEY;
 
-    private final RestTemplate restTemplate;
-    private static final Logger logger = LoggerFactory.getLogger(SolarWatchService.class);
+    private final WebClient webClient;
     private final CityRepository cityRepository;
     private final SunsetSunriseRepository sunsetSunriseRepository;
 
 
-    public SolarWatchService(RestTemplate restTemplate, CityRepository cityRepository, SunsetSunriseRepository sunsetSunriseRepository) {
-        this.restTemplate = restTemplate;
+    public SolarWatchService(WebClient webClient, CityRepository cityRepository, SunsetSunriseRepository sunsetSunriseRepository) {
+        this.webClient = webClient;
         this.cityRepository = cityRepository;
         this.sunsetSunriseRepository = sunsetSunriseRepository;
     }
@@ -64,7 +64,12 @@ public class SolarWatchService {
         double lat = city.getLat();
         String url = String.format("https://api.sunrise-sunset.org/json?lat=%f&lng=%f&date=%s", lat, lon, date);
 
-        com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunrise response = restTemplate.getForObject(url, com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunrise.class);
+        com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunrise response = webClient
+                .get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunrise.class)
+                .block();
 
         logger.info("Response from Sunset and Sunrise Time API: {}", response);
 
@@ -80,13 +85,18 @@ public class SolarWatchService {
     private City getCityFromApi(String cityName) {
         String url = String.format("http://api.openweathermap.org/geo/1.0/direct?q=%s&appid=%s", cityName, API_KEY);
 
-        City[] response = restTemplate.getForObject(url, City[].class);
-
-        logger.info("Response from Geocoding API: {}", response);
-
         try {
+            City[] response = webClient
+                    .get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(City[].class)
+                    .block();
+
+            logger.info("Response from Geocoding API: {}", response);
+
             return response[0];
-        } catch (NullPointerException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             throw new SettlementNotFoundException(cityName);
         }
     }
