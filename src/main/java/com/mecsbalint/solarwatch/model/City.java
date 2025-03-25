@@ -1,10 +1,12 @@
 package com.mecsbalint.solarwatch.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
 @Entity
+@Data
 public class City {
 
     @Id
@@ -18,28 +20,4 @@ public class City {
 
     @OneToMany(mappedBy = "city")
     private List<SunsetSunrise> sunsetSunrises;
-
-    public String getName() {
-        return name;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public List<SunsetSunrise> getSunsetSunrises() {
-        return sunsetSunrises;
-    }
 }
