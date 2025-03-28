@@ -12,6 +12,8 @@ public class City {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ID_SEQ")
     private long id;
+
+    @Column(unique = true)
     private String name;
     private double lon;
     private double lat;

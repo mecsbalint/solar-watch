@@ -68,6 +68,8 @@ public class WebSecurityConfig {
                         auth
                                 .requestMatchers("registration/**").permitAll()
                                 .requestMatchers("solarwatch/**").hasRole("USER")
+                                .requestMatchers("city/**").hasRole("ADMIN")
+                                .requestMatchers("sunset-sunrise").hasRole("ADMIN")
                                 .requestMatchers("login/**").permitAll()
                                 .requestMatchers("/error").permitAll()
                                 .anyRequest().authenticated()
