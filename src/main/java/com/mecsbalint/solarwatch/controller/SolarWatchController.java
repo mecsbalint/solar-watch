@@ -3,10 +3,7 @@ package com.mecsbalint.solarwatch.controller;
 import com.mecsbalint.solarwatch.exceptions.MissingQueryParamException;
 import com.mecsbalint.solarwatch.controller.dto.SolarWatchDto;
 import com.mecsbalint.solarwatch.service.SolarWatchService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
