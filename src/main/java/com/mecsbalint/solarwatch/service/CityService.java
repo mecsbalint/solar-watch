@@ -48,8 +48,10 @@ public class CityService {
     }
 
     public Optional<CityDto> deleteCity(String name) {
-        Optional<City> city = cityRepository.deleteByName(name);
-        return city.map(CityDto::new);
+        City city = cityRepository.findCityByName(name);
+        Optional<CityDto> cityDtoOpt = city == null ? Optional.empty() : Optional.of(new CityDto(city));
+        cityRepository.deleteByName(name);
+        return cityDtoOpt;
     }
 
     private City generateCityFromCityDto(CityDto cityDto) {

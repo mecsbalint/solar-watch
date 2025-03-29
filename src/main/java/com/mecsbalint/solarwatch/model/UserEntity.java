@@ -17,6 +17,6 @@ public class UserEntity {
     private String name;
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     Set<UserRole> roles;
 }

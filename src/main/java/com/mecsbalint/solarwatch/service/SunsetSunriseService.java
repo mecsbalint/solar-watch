@@ -38,7 +38,7 @@ public class SunsetSunriseService {
         City city = cityRepository.findCityById(sunsetSunriseDto.cityId());
         if (city == null) return Optional.empty();
 
-        if (sunsetSunriseRepository.existsById(sunsetSunriseDto.id())) return Optional.empty();
+        if (!sunsetSunriseRepository.existsById(sunsetSunriseDto.id())) return Optional.empty();
 
         SunsetSunrise updatedSunsetSunrise = generateSunsetSunriseFromSunsetSunriseDto(sunsetSunriseDto, city);
 
@@ -48,9 +48,13 @@ public class SunsetSunriseService {
     }
 
     public Optional<SunsetSunriseDto> deleteSunsetSunrise(long id) {
-        Optional<SunsetSunrise> sunsetSunriseOpt = sunsetSunriseRepository.deleteById(id);
+         SunsetSunrise sunsetSunrise = sunsetSunriseRepository.findSunsetSunriseById(id);
 
-        return sunsetSunriseOpt.map(SunsetSunriseDto::new);
+         Optional<SunsetSunriseDto> sunsetSunriseDtoOpt = sunsetSunrise == null ? Optional.empty() : Optional.of(new SunsetSunriseDto(sunsetSunrise));
+
+         sunsetSunriseRepository.deleteById(id);
+
+         return sunsetSunriseDtoOpt;
     }
 
     private SunsetSunrise generateSunsetSunriseFromSunsetSunriseNewDto(SunsetSunriseNewDto sunsetSunriseNewDto, City city) {
@@ -59,7 +63,7 @@ public class SunsetSunriseService {
         sunsetSunrise.setCity(city);
         sunsetSunrise.setDate(sunsetSunriseNewDto.date());
         sunsetSunrise.setSunrise(sunsetSunriseNewDto.sunrise());
-        sunsetSunrise.setSunset(sunsetSunriseNewDto.sunrise());
+        sunsetSunrise.setSunset(sunsetSunriseNewDto.sunset());
 
         return sunsetSunrise;
     }

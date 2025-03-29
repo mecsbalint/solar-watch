@@ -21,26 +21,26 @@ public class JwtUtils {
     @Value("${mecsbalint.app.jwtSecret}")
     private String jwtSecret;
     @Value("${mecsbalint.app.jwtExpirationMs}")
-    private String jwtExpirationMs;
+    private int jwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private Key key() {
+    public Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(key()).build().parse(authToken);
+            Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
             return true;
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
@@ -56,6 +56,6 @@ public class JwtUtils {
     }
 
     public String getUserNameFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(key()).build().parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token).getBody().getSubject();
     }
 }

@@ -34,7 +34,7 @@ public class UserController {
         this.jwtUtils = jwtUtils;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/registration")
     public ResponseEntity<Void> createUser(@RequestBody UserNamePasswordDto userRegistration) {
         if (userService.saveUser(userRegistration)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
