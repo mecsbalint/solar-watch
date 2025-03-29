@@ -1,19 +1,25 @@
 package com.mecsbalint.solarwatch.service;
 
 import com.mecsbalint.solarwatch.controller.dto.CityDto;
+import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseDto;
 import com.mecsbalint.solarwatch.model.City;
+import com.mecsbalint.solarwatch.model.SunsetSunrise;
 import com.mecsbalint.solarwatch.repository.CityRepository;
+import com.mecsbalint.solarwatch.repository.SunsetSunriseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CityService {
 
     private final CityRepository cityRepository;
+    private final SunsetSunriseService sunsetSunriseService;
 
-    public CityService(CityRepository cityRepository) {
+    public CityService(CityRepository cityRepository, SunsetSunriseService sunsetSunriseService) {
         this.cityRepository = cityRepository;
+        this.sunsetSunriseService = sunsetSunriseService;
     }
 
     public boolean addCity(CityDto cityAddDto) {
@@ -48,12 +54,16 @@ public class CityService {
 
     private City generateCityFromCityDto(CityDto cityDto) {
         City city = new City();
+        List<SunsetSunrise> sunsetSunrises = cityDto.sunsetSunrises().stream()
+                        .map(sunsetSunriseDto -> sunsetSunriseService.generateSunsetSunriseFromSunsetSunriseDto(sunsetSunriseDto, city))
+                        .toList();
+
         city.setName(cityDto.name());
         city.setLon(cityDto.lon());
         city.setLat(cityDto.lat());
         city.setCountry(cityDto.country());
         city.setState(cityDto.state());
-        city.setSunsetSunrises(cityDto.sunsetSunrises());
+        city.setSunsetSunrises(sunsetSunrises);
 
         return city;
     }

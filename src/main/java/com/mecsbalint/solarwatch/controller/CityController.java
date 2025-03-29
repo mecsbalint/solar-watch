@@ -37,7 +37,7 @@ public class CityController {
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<?> deleteCountry(@PathVariable String name) {
+    public ResponseEntity<?> deleteCity(@PathVariable String name) {
         Optional<CityDto> city = cityService.deleteCity(name);
         if (city.isPresent()) {
             return ResponseEntity.ok(city.get());

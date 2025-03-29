@@ -64,7 +64,7 @@ public class SunsetSunriseService {
         return sunsetSunrise;
     }
 
-    private SunsetSunrise generateSunsetSunriseFromSunsetSunriseDto(SunsetSunriseDto sunsetSunriseDto, City city) {
+    public SunsetSunrise generateSunsetSunriseFromSunsetSunriseDto(SunsetSunriseDto sunsetSunriseDto, City city) {
         SunsetSunrise sunsetSunrise = new SunsetSunrise();
 
         sunsetSunrise.setId(sunsetSunriseDto.id());
