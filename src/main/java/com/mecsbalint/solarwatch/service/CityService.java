@@ -29,11 +29,12 @@ public class CityService {
     }
 
     public Optional<CityDto> updateCity(CityDto updateCityDto) {
-        if (cityRepository.findCityByName(updateCityDto.name()) == null) {
+        City ogCity = cityRepository.findCityByName(updateCityDto.name());
+        if (ogCity == null) {
             return Optional.empty();
         }
 
-        City updateCity = generateCityFromCityDto(updateCityDto);
+        City updateCity = generateCityFromCityDtoWithId(updateCityDto, ogCity.getId());
 
         City updatedCity = cityRepository.save(updateCity);
 
@@ -53,6 +54,13 @@ public class CityService {
         city.setCountry(cityDto.country());
         city.setState(cityDto.state());
         city.setSunsetSunrises(cityDto.sunsetSunrises());
+
+        return city;
+    }
+
+    private City generateCityFromCityDtoWithId(CityDto cityDto, long id) {
+        City city = generateCityFromCityDto(cityDto);
+        city.setId(id);
 
         return city;
     }
