@@ -14,7 +14,9 @@ public interface SunsetSunriseRepository extends JpaRepository<SunsetSunrise, Lo
 
     SunsetSunrise findSunsetSunriseById(long id);
 
-    Optional<SunsetSunrise> deleteById(long id);
+    void deleteById(long id);
 
     SunsetSunrise findSunsetSunriseByCityAndDate(City city, LocalDate date);
+
+    boolean existsSunsetSunriseByCityAndDate(City city, LocalDate date);
 }

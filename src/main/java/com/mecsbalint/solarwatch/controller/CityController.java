@@ -2,6 +2,7 @@ package com.mecsbalint.solarwatch.controller;
 
 import com.mecsbalint.solarwatch.controller.dto.CityDto;
 import com.mecsbalint.solarwatch.service.CityService;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ public class CityController {
     }
 
     @DeleteMapping("/{name}")
+    @Transactional
     public ResponseEntity<?> deleteCity(@PathVariable String name) {
         Optional<CityDto> city = cityService.deleteCity(name);
         if (city.isPresent()) {
