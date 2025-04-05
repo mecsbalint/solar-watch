@@ -66,11 +66,11 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("registration/**").permitAll()
-                                .requestMatchers("solarwatch/**").hasRole("USER")
-                                .requestMatchers("city/**").hasRole("ADMIN")
-                                .requestMatchers("sunset-sunrise").hasRole("ADMIN")
-                                .requestMatchers("login/**").permitAll()
+                                .requestMatchers("api/registration/**").permitAll()
+                                .requestMatchers("api/login/**").permitAll()
+                                .requestMatchers("api/solarwatch/**").hasRole("USER")
+                                .requestMatchers("api/city/**").hasRole("ADMIN")
+                                .requestMatchers("api/sunset-sunrise/**").hasRole("ADMIN")
                                 .requestMatchers("/error").permitAll()
                                 .anyRequest().authenticated()
 

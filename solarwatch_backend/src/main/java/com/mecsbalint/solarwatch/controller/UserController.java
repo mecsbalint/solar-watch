@@ -34,7 +34,7 @@ public class UserController {
         this.jwtUtils = jwtUtils;
     }
 
-    @PostMapping("/registration")
+    @PostMapping("api/registration")
     public ResponseEntity<Void> createUser(@RequestBody UserNamePasswordDto userRegistration) {
         if (userService.saveUser(userRegistration)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -42,7 +42,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
-    @PostMapping("/login")
+    @PostMapping("api/login")
     public ResponseEntity<?> authenticateUser(@RequestBody UserNamePasswordDto userLogin) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.name(), userLogin.password()));
 
