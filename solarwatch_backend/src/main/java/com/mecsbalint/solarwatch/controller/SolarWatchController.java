@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/solarwatch")
+@RequestMapping("api/solarwatch")
 public class SolarWatchController {
     private final SolarWatchService solarWatchService;
 

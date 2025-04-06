@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/sunrise-sunset")
+@RequestMapping("api/sunrise-sunset")
 public class SunriseSunsetController {
 
     private final SunsetSunriseService sunsetSunriseService;

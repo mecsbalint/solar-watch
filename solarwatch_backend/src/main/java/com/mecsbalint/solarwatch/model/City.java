@@ -20,6 +20,6 @@ public class City {
     private String country;
     private String state;
 
-    @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SunsetSunrise> sunsetSunrises;
 }
