@@ -5,7 +5,7 @@ function MainPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        [null, "null"].includes(localStorage.getItem("solarWatchJwt")) ? navigate("/registration") : navigate("/solarwatch");
+        [null, "null"].includes(localStorage.getItem("solarWatchJwt")) ? navigate("/login") : navigate("/solarwatch");
     }, [navigate]);
 
     return (
