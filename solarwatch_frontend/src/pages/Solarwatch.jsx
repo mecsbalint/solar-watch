@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CitySearchForm from "../components/CitySearchForm";
 import SunriseSunsetDisplay from "../components/SunriseSunsetDisplay";
+import backgroundImg from "../assets/solarwatch_bg.jpg";
 
 function Solarwatch() {
     const navigate = useNavigate();
@@ -36,10 +37,14 @@ function Solarwatch() {
     }
 
     return (
-        <>
-            <CitySearchForm onSubmit={submitForm} errorMsg={errorMsg}/>
-            {sunriseSunsetData && <SunriseSunsetDisplay sunriseSunsetData={sunriseSunsetData}/>}
-        </>
+        <div className="bg-cover grid grid-cols-4 grid-rows-5 min-h-screen overflow-hidden place-items-stretch" style={{ backgroundImage: `url(${backgroundImg})`}}>
+            <div className="grid col-start-2 col-span-2 row-start-2 place-items-center">
+                <CitySearchForm onSubmit={submitForm} errorMsg={errorMsg}/>
+            </div>
+            <div className="grid col-start-2 col-span-2 row-span-3 place-items-center">
+                {sunriseSunsetData && <SunriseSunsetDisplay sunriseSunsetData={sunriseSunsetData}/>}
+            </div>
+        </div>
     )
 }
 

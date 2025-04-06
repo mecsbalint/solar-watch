@@ -4,8 +4,7 @@ import sunsetIcon from "../assets/sunset_icon.png";
 function SunriseSunsetDisplay({sunriseSunsetData}) {
 
     return (
-        <>
-            <div className="stats shadow">
+            <div className="stats stats-vertical lg:stats-horizontal shadow bg-base-100 ">
                 <div className="stat">
                     <div className="stat-figure text-secondary">
                     <div className="avatar online">
@@ -30,7 +29,6 @@ function SunriseSunsetDisplay({sunriseSunsetData}) {
                     <div className="stat-value text-2xl">{sunriseSunsetData.sunSet}</div>
                 </div>
             </div>
-        </>
     )
 }
 

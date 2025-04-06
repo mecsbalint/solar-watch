@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import UserForm from "../components/UserForm";
+import backgroundImg from "../assets/login_bg.jpg";
 
 function Login() {
     const navigate = useNavigate();
@@ -38,18 +39,20 @@ function Login() {
     }
 
     return (
-        <fieldset className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
-            <div>
-                <legend className="fieldset-legend text-2xl">Login</legend>
-                <UserForm 
-                    submitText={"Log in"}
-                    onSubmit={onSubmit}
-                    nameErrorMsg={nameErrorMsg}
-                    passwordErrorMsg={passwordErrorMsg}                  
-                />  
-            </div>
-            <Link className="text text-secondary my-1" to="/registration">You doesn't have an account yet?</Link>
-        </fieldset>
+        <div className={`bg-cover flex min-h-screen overflow-hidden items-center justify-center`} style={{ backgroundImage: `url(${backgroundImg})`}}>
+            <fieldset className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
+                <div>
+                    <legend className="fieldset-legend text-2xl">Login</legend>
+                    <UserForm 
+                        submitText={"Log in"}
+                        onSubmit={onSubmit}
+                        nameErrorMsg={nameErrorMsg}
+                        passwordErrorMsg={passwordErrorMsg}                  
+                    />  
+                </div>
+                <Link className="text text-secondary my-1" to="/registration">You doesn't have an account?</Link>
+            </fieldset>
+        </div>
     )
 }
 
