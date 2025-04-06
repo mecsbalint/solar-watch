@@ -15,6 +15,9 @@ function Login() {
     async function onSubmit(event, loginObj) {
         event.preventDefault();
 
+        setNameErrorMsg("");
+        setPasswordErrorMsg("");
+
         const response = await fetch("api/login", {
                 method: "POST", 
                 headers: {

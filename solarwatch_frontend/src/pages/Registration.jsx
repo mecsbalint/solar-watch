@@ -14,6 +14,8 @@ function Registration() {
     async function onSubmit(event, registrationObj) {
         event.preventDefault();
 
+        setNameErrorMsg("");
+
         const response = await fetch("api/registration", {
                 method: "POST", 
                 headers: {
