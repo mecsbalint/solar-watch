@@ -2,7 +2,6 @@ package com.mecsbalint.solarwatch.configuration;
 
 import com.mecsbalint.solarwatch.model.UserRole;
 import com.mecsbalint.solarwatch.repository.UserRoleRepository;
-import org.apache.catalina.User;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.client.WebClient;
