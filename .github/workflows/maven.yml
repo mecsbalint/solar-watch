@@ -22,14 +22,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+        
     - name: Clean and build with Maven
       run: cd solarwatch_backend; mvn clean package
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: backend-artifacts
+        path: solarwatch_backend/target
 
   push_to_DockerHub:
     name: Push image to DockerHub
@@ -51,6 +59,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: backend-artifacts
+          path: solarwatch_backend/target
 
       - name: Verify files in build context
         run: ls -R ./solarwatch_backend
