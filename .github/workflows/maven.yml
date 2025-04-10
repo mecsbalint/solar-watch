@@ -37,7 +37,7 @@ jobs:
       uses: actions/upload-artifact@v3.1.3
       with:
         name: backend-artifacts
-        path: solarwatch_backend/target
+        path: ./target
 
   push_to_DockerHub:
     name: Push image to DockerHub
