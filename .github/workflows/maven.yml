@@ -28,8 +28,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      run: cd solarwatch_backend; mvn -B package
+    - name: Clean and build with Maven
+      run: cd solarwatch_backend; mvn clean package
 
   push_to_DockerHub:
     name: Push image to DockerHub
