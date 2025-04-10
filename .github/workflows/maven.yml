@@ -58,7 +58,7 @@ jobs:
       - name: build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./Dockerfile
+          context: ./solarwatch_backend
+          file: ./solarwatch_backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/solarwatch-backend:latest
