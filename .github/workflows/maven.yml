@@ -32,12 +32,6 @@ jobs:
         
     - name: Clean and build with Maven
       run: cd solarwatch_backend; mvn clean package
-      
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3.1.3
-      with:
-        name: backend-artifacts
-        path: ./target
 
   push_to_DockerHub:
     name: Push image to DockerHub
@@ -60,11 +54,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: backend-artifacts
-          path: solarwatch_backend/target
+      - name: build maven project
+        run: |
+          cd solarwatch_backend
+          mvn clean package
+          cd ..
 
       - name: Verify files in build context
         run: ls -R ./solarwatch_backend
