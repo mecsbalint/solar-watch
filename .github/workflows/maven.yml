@@ -34,7 +34,7 @@ jobs:
       run: cd solarwatch_backend; mvn clean package
       
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: backend-artifacts
         path: solarwatch_backend/target
@@ -61,7 +61,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v3.0.2
         with:
           name: backend-artifacts
           path: solarwatch_backend/target
