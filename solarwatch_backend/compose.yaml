@@ -1,0 +1,40 @@
+services:
+  app:
+    image: 'mecsbalint/solarwatch_backend:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
+      - SPRING_DATASOURCE_USERNAME=compose-postgres
+      - SPRING_DATASOURCE_PASSWORD=compose-postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - GEOCODING_KEY=774d5baa491d013719901810cfb47715
+      - MECSBALINT_APP_JWTSECRET========================CodeCool=Spring===========================
+      - MECSBALINT_APP_JWTEXPIRATIONMS=86400000
+    ports:
+      - "8080:8080"
+
+
+  db:
+    image: 'postgres:latest'
+    container_name: db
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+    environment:
+      - POSTGRES_USER=compose-postgres
+      - POSTGRES_PASSWORD=compose-postgres
+      - POSTGRES_DB=compose-postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U compose-postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
