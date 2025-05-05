@@ -1,16 +1,17 @@
 package com.mecsbalint.solarwatch.service;
 
+import com.mecsbalint.solarwatch.utility.Fetcher;
 import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
 import com.mecsbalint.solarwatch.model.City;
 import com.mecsbalint.solarwatch.controller.dto.SolarWatchDto;
 import com.mecsbalint.solarwatch.model.SunsetSunrise;
+import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseRecord;
 import com.mecsbalint.solarwatch.repository.CityRepository;
 import com.mecsbalint.solarwatch.repository.SunsetSunriseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 
@@ -21,13 +22,13 @@ public class SolarWatchService {
     @Value("${GEOCODING_KEY}")
     private String API_KEY;
 
-    private final WebClient webClient;
+    private final Fetcher fetcher;
     private final CityRepository cityRepository;
     private final SunsetSunriseRepository sunsetSunriseRepository;
 
 
-    public SolarWatchService(WebClient webClient, CityRepository cityRepository, SunsetSunriseRepository sunsetSunriseRepository) {
-        this.webClient = webClient;
+    public SolarWatchService(Fetcher fetcher, CityRepository cityRepository, SunsetSunriseRepository sunsetSunriseRepository) {
+        this.fetcher = fetcher;
         this.cityRepository = cityRepository;
         this.sunsetSunriseRepository = sunsetSunriseRepository;
     }
@@ -64,12 +65,7 @@ public class SolarWatchService {
         double lat = city.getLat();
         String url = String.format("https://api.sunrise-sunset.org/json?lat=%f&lng=%f&date=%s", lat, lon, date);
 
-        com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunrise response = webClient
-                .get()
-                .uri(url)
-                .retrieve()
-                .bodyToMono(com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunrise.class)
-                .block();
+        SunsetSunriseRecord response = fetcher.fetch(url, SunsetSunriseRecord.class);
 
         logger.info("Response from Sunset and Sunrise Time API: {}", response);
 
@@ -86,12 +82,7 @@ public class SolarWatchService {
         String url = String.format("http://api.openweathermap.org/geo/1.0/direct?q=%s&appid=%s", cityName, API_KEY);
 
         try {
-            City[] response = webClient
-                    .get()
-                    .uri(url)
-                    .retrieve()
-                    .bodyToMono(City[].class)
-                    .block();
+            City[] response = fetcher.fetch(url, City[].class);
 
             logger.info("Response from Geocoding API: {}", response);
 
