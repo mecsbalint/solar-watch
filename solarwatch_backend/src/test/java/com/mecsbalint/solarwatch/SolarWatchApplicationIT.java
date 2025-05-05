@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mecsbalint.solarwatch.controller.dto.JwtResponseDto;
 import com.mecsbalint.solarwatch.controller.dto.UserNamePasswordDto;
 import com.mecsbalint.solarwatch.model.City;
-import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunrise;
+import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseRecord;
 import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseResults;
+import com.mecsbalint.solarwatch.utility.Fetcher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,7 +41,7 @@ public class SolarWatchApplicationIT {
     private MockMvc mvc;
 
     @MockitoBean
-    private WebClient webClient;
+    private Fetcher fetcherMock;
 
     @Test
     public void registration_usernameIsNotOccupied_responseStatus200() throws Exception {
@@ -69,20 +70,8 @@ public class SolarWatchApplicationIT {
     @Test
     public void getSolarWatchData_userLoggedInAndCityExists_responseStatus200() throws Exception {
         var usernamePasswordDto = new UserNamePasswordDto("User", "abcde");
-
-        WebClient.RequestHeadersUriSpec uriSpecMock = mock(WebClient.RequestHeadersUriSpec.class);
-        WebClient.RequestBodyUriSpec headerSpecMock = mock(WebClient.RequestBodyUriSpec.class);
-        WebClient.ResponseSpec responseSpecMock = mock(WebClient.ResponseSpec.class);
-        Mono<City[]> monoCityArrayMock = mock(Mono.class);
-        Mono<SunsetSunrise> monoSunsetSunriseMock = mock(Mono.class);
-
-        when(webClient.get()).thenReturn(uriSpecMock);
-        when(uriSpecMock.uri(anyString())).thenReturn(headerSpecMock);
-        when(headerSpecMock.retrieve()).thenReturn(responseSpecMock);
-        when(responseSpecMock.bodyToMono(City[].class)).thenReturn(monoCityArrayMock);
-        when(responseSpecMock.bodyToMono(SunsetSunrise.class)).thenReturn(monoSunsetSunriseMock);
-        when(monoCityArrayMock.block()).thenReturn(new City[]{new City()});
-        when(monoSunsetSunriseMock.block()).thenReturn(new SunsetSunrise(new SunsetSunriseResults("5:12:27 AM", "5:12:27 PM")));
+        when(fetcherMock.fetch(any(), eq(City[].class))).thenReturn(new City[]{new City()});
+        when(fetcherMock.fetch(any(), eq(SunsetSunriseRecord.class))).thenReturn(new SunsetSunriseRecord(new SunsetSunriseResults("5:12:27 AM", "5:12:27 PM")));
 
         mvc.perform(post("/api/registration")
                 .contentType(MediaType.APPLICATION_JSON)
