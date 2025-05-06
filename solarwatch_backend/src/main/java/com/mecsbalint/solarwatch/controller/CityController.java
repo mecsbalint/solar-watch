@@ -21,29 +21,17 @@ public class CityController {
 
     @PostMapping
     public ResponseEntity<Void> addCity(@RequestBody CityDto cityAddDto) {
-        if (cityService.addCity(cityAddDto)) {
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        cityService.addCity(cityAddDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
-    public ResponseEntity<?> updateCity(@RequestBody CityDto updateCityDto) {
-        Optional<CityDto> updatedCity = cityService.updateCity(updateCityDto);
-
-        if (updatedCity.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-        return ResponseEntity.ok(updatedCity.get());
+    public CityDto updateCity(@RequestBody CityDto updateCityDto) {
+        return cityService.updateCity(updateCityDto);
     }
 
     @DeleteMapping("/{name}")
-    @Transactional
-    public ResponseEntity<?> deleteCity(@PathVariable String name) {
-        Optional<CityDto> city = cityService.deleteCity(name);
-        if (city.isPresent()) {
-            return ResponseEntity.ok(city.get());
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    public CityDto deleteCity(@PathVariable String name) {
+        return cityService.deleteCity(name);
     }
 }

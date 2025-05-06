@@ -2,6 +2,9 @@ package com.mecsbalint.solarwatch.service;
 
 import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseDto;
 import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseNewDto;
+import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
+import com.mecsbalint.solarwatch.exceptions.SunriseSunsetAlreadyExistException;
+import com.mecsbalint.solarwatch.exceptions.SunriseSunsetNotFoundException;
 import com.mecsbalint.solarwatch.model.City;
 import com.mecsbalint.solarwatch.model.SunsetSunrise;
 import com.mecsbalint.solarwatch.repository.CityRepository;
@@ -21,40 +24,51 @@ public class SunsetSunriseService {
         this.cityRepository = cityRepository;
     }
 
-    public boolean addSunsetSunrise(SunsetSunriseNewDto sunsetSunriseNewDto) {
+    public void addSunsetSunrise(SunsetSunriseNewDto sunsetSunriseNewDto) {
         City city = cityRepository.findCityById(sunsetSunriseNewDto.cityId());
-        if (city == null) return false;
 
-        if (sunsetSunriseRepository.findSunsetSunriseByCityAndDate(city, sunsetSunriseNewDto.date()) != null) return false;
+        if (city == null) {
+            throw new SettlementNotFoundException("n/a", "SolarWatch database");
+        };
+
+        if (sunsetSunriseRepository.findSunsetSunriseByCityAndDate(city, sunsetSunriseNewDto.date()) != null) {
+            throw new SunriseSunsetAlreadyExistException(city.getName(), sunsetSunriseNewDto.date());
+        }
 
         SunsetSunrise newSunsetSunrise = generateSunsetSunriseFromSunsetSunriseNewDto(sunsetSunriseNewDto, city);
 
         sunsetSunriseRepository.save(newSunsetSunrise);
 
-        return true;
     }
 
-    public Optional<SunsetSunriseDto> updateSunsetSunrise(SunsetSunriseDto sunsetSunriseDto) {
+    public SunsetSunriseDto updateSunsetSunrise(SunsetSunriseDto sunsetSunriseDto) {
         City city = cityRepository.findCityById(sunsetSunriseDto.cityId());
-        if (city == null) return Optional.empty();
 
-        if (!sunsetSunriseRepository.existsById(sunsetSunriseDto.id())) return Optional.empty();
+        if (city == null) {
+            throw new SettlementNotFoundException("n/a", "SolarWatch Database");
+        }
+
+        if (!sunsetSunriseRepository.existsById(sunsetSunriseDto.id())) {
+            throw new SunriseSunsetNotFoundException();
+        }
 
         SunsetSunrise updatedSunsetSunrise = generateSunsetSunriseFromSunsetSunriseDto(sunsetSunriseDto, city);
 
         sunsetSunriseRepository.save(updatedSunsetSunrise);
 
-        return Optional.of(new SunsetSunriseDto(updatedSunsetSunrise));
+        return new SunsetSunriseDto(updatedSunsetSunrise);
     }
 
-    public Optional<SunsetSunriseDto> deleteSunsetSunrise(long id) {
-         SunsetSunrise sunsetSunrise = sunsetSunriseRepository.findSunsetSunriseById(id);
+    public SunsetSunriseDto deleteSunsetSunrise(long id) {
+        SunsetSunrise sunsetSunrise = sunsetSunriseRepository.findSunsetSunriseById(id);
 
-         Optional<SunsetSunriseDto> sunsetSunriseDtoOpt = sunsetSunrise == null ? Optional.empty() : Optional.of(new SunsetSunriseDto(sunsetSunrise));
+        if (sunsetSunrise == null) {
+            throw new SunriseSunsetNotFoundException();
+        }
 
-         sunsetSunriseRepository.deleteById(id);
+        sunsetSunriseRepository.deleteById(id);
 
-         return sunsetSunriseDtoOpt;
+        return new SunsetSunriseDto(sunsetSunrise);
     }
 
     private SunsetSunrise generateSunsetSunriseFromSunsetSunriseNewDto(SunsetSunriseNewDto sunsetSunriseNewDto, City city) {

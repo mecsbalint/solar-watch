@@ -2,10 +2,13 @@ package com.mecsbalint.solarwatch.service;
 
 import com.mecsbalint.solarwatch.controller.dto.CityDto;
 import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseDto;
+import com.mecsbalint.solarwatch.exceptions.SettlementAlreadyExistException;
+import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
 import com.mecsbalint.solarwatch.model.City;
 import com.mecsbalint.solarwatch.model.SunsetSunrise;
 import com.mecsbalint.solarwatch.repository.CityRepository;
 import com.mecsbalint.solarwatch.repository.SunsetSunriseRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,36 +25,39 @@ public class CityService {
         this.sunsetSunriseService = sunsetSunriseService;
     }
 
-    public boolean addCity(CityDto cityAddDto) {
+    public void addCity(CityDto cityAddDto) {
         if (cityRepository.findCityByName(cityAddDto.name()) != null) {
-            return false;
+           throw new SettlementAlreadyExistException(cityAddDto.name());
         }
 
         City newCity = generateCityFromCityDto(cityAddDto);
-
         cityRepository.save(newCity);
-
-        return true;
     }
 
-    public Optional<CityDto> updateCity(CityDto updateCityDto) {
+    public CityDto updateCity(CityDto updateCityDto) {
         City ogCity = cityRepository.findCityByName(updateCityDto.name());
         if (ogCity == null) {
-            return Optional.empty();
+            throw new SettlementNotFoundException(updateCityDto.name(), "SolarWatch database");
         }
 
         City updateCity = generateCityFromCityDtoWithId(updateCityDto, ogCity.getId());
 
         City updatedCity = cityRepository.save(updateCity);
 
-        return Optional.of(new CityDto(updatedCity));
+        return new CityDto(updatedCity);
     }
 
-    public Optional<CityDto> deleteCity(String name) {
+    @Transactional
+    public CityDto deleteCity(String name) {
         City city = cityRepository.findCityByName(name);
-        Optional<CityDto> cityDtoOpt = city == null ? Optional.empty() : Optional.of(new CityDto(city));
+
+        if (city == null) {
+            throw new SettlementNotFoundException(name, "SolarWatch database");
+        }
+
         cityRepository.deleteByName(name);
-        return cityDtoOpt;
+
+        return new CityDto(city);
     }
 
     private City generateCityFromCityDto(CityDto cityDto) {
