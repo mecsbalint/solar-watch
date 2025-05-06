@@ -88,7 +88,7 @@ public class SolarWatchService {
 
             return response[0];
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new SettlementNotFoundException(cityName);
+            throw new SettlementNotFoundException(cityName, "Geocoding API (https://openweathermap.org/api )");
         }
     }
 }
