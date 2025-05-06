@@ -1,18 +1,15 @@
 package com.mecsbalint.solarwatch.service;
 
 import com.mecsbalint.solarwatch.controller.dto.CityDto;
-import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseDto;
 import com.mecsbalint.solarwatch.exceptions.SettlementAlreadyExistException;
 import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
 import com.mecsbalint.solarwatch.model.City;
 import com.mecsbalint.solarwatch.model.SunsetSunrise;
 import com.mecsbalint.solarwatch.repository.CityRepository;
-import com.mecsbalint.solarwatch.repository.SunsetSunriseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CityService {

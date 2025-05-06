@@ -11,7 +11,6 @@ import com.mecsbalint.solarwatch.repository.CityRepository;
 import com.mecsbalint.solarwatch.repository.SunsetSunriseRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 public class SunsetSunriseService {
@@ -29,7 +28,7 @@ public class SunsetSunriseService {
 
         if (city == null) {
             throw new SettlementNotFoundException("n/a", "SolarWatch database");
-        };
+        }
 
         if (sunsetSunriseRepository.findSunsetSunriseByCityAndDate(city, sunsetSunriseNewDto.date()) != null) {
             throw new SunriseSunsetAlreadyExistException(city.getName(), sunsetSunriseNewDto.date());
