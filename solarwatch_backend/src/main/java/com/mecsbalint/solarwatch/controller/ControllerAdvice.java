@@ -1,8 +1,6 @@
 package com.mecsbalint.solarwatch.controller;
 
-import com.mecsbalint.solarwatch.exceptions.MissingQueryParamException;
-import com.mecsbalint.solarwatch.exceptions.SettlementAlreadyExistException;
-import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
+import com.mecsbalint.solarwatch.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -40,4 +38,19 @@ public class ControllerAdvice {
     public String settlementAlreadyExistHandler(SettlementAlreadyExistException e) {
         return e.getMessage();
     }
+
+    @ResponseBody
+    @ExceptionHandler(SunriseSunsetAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String sunriseSunsetAlreadyExistHandler(SunriseSunsetAlreadyExistException e) {
+        return e.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(SunriseSunsetNotFoundException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String sunriseSunsetNotFoundHandler(SunriseSunsetNotFoundException e) {
+        return e.getMessage();
+    }
+
 }
