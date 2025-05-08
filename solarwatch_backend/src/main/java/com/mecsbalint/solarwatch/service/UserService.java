@@ -1,16 +1,14 @@
 package com.mecsbalint.solarwatch.service;
 
-import com.mecsbalint.solarwatch.controller.dto.UserDto;
 import com.mecsbalint.solarwatch.controller.dto.UserNamePasswordDto;
+import com.mecsbalint.solarwatch.model.RoleType;
 import com.mecsbalint.solarwatch.model.UserEntity;
-import com.mecsbalint.solarwatch.model.UserRole;
 import com.mecsbalint.solarwatch.repository.UserRepository;
 import com.mecsbalint.solarwatch.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -35,7 +33,7 @@ public class UserService {
         UserEntity user = new UserEntity();
         user.setName(userRegistration.name());
         user.setPassword(passwordEncoder.encode(userRegistration.password()));
-        user.setRoles(Set.of(userRoleRepository.findUserRoleByRoleType(UserRole.RoleType.ROLE_USER)));
+        user.setRoles(Set.of(userRoleRepository.findUserRoleByRoleType(RoleType.ROLE_USER)));
 
         userRepository.save(user);
 
