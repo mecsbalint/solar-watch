@@ -5,7 +5,7 @@ import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
 import com.mecsbalint.solarwatch.model.City;
 import com.mecsbalint.solarwatch.controller.dto.SolarWatchDto;
 import com.mecsbalint.solarwatch.model.SunsetSunrise;
-import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseRecord;
+import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseFromApiCallDto;
 import com.mecsbalint.solarwatch.repository.CityRepository;
 import com.mecsbalint.solarwatch.repository.SunsetSunriseRepository;
 import org.slf4j.Logger;
@@ -65,7 +65,7 @@ public class SolarWatchService {
         double lat = city.getLat();
         String url = String.format("https://api.sunrise-sunset.org/json?lat=%f&lng=%f&date=%s", lat, lon, date);
 
-        SunsetSunriseRecord response = fetcher.fetch(url, SunsetSunriseRecord.class);
+        SunsetSunriseFromApiCallDto response = fetcher.fetch(url, SunsetSunriseFromApiCallDto.class);
 
         logger.info("Response from Sunset and Sunrise Time API: {}", response);
 

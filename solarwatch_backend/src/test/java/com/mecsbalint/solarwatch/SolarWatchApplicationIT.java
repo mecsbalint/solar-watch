@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mecsbalint.solarwatch.controller.dto.JwtResponseDto;
 import com.mecsbalint.solarwatch.controller.dto.UserNamePasswordDto;
 import com.mecsbalint.solarwatch.model.City;
-import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseRecord;
-import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseResults;
+import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseFromApiCallDto;
+import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseResultsDto;
 import com.mecsbalint.solarwatch.utility.Fetcher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,11 +18,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -71,7 +68,7 @@ public class SolarWatchApplicationIT {
     public void getSolarWatchData_userLoggedInAndCityExists_responseStatus200() throws Exception {
         var usernamePasswordDto = new UserNamePasswordDto("User", "abcde");
         when(fetcherMock.fetch(any(), eq(City[].class))).thenReturn(new City[]{new City()});
-        when(fetcherMock.fetch(any(), eq(SunsetSunriseRecord.class))).thenReturn(new SunsetSunriseRecord(new SunsetSunriseResults("5:12:27 AM", "5:12:27 PM")));
+        when(fetcherMock.fetch(any(), eq(SunsetSunriseFromApiCallDto.class))).thenReturn(new SunsetSunriseFromApiCallDto(new SunsetSunriseResultsDto("5:12:27 AM", "5:12:27 PM")));
 
         mvc.perform(post("/api/registration")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -88,5 +85,63 @@ public class SolarWatchApplicationIT {
         mvc.perform(get("/api/solarwatch?city=Budapest")
                 .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getSolarWatchData_userLoggedInAndCityDoNotExist_responseStatus404() throws Exception {
+        var usernamePasswordDto = new UserNamePasswordDto("User Boci", "abcde");
+        when(fetcherMock.fetch(any(), eq(City[].class))).thenReturn(new City[]{});
+
+        mvc.perform(post("/api/registration")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(usernamePasswordDto)));
+
+        String responseBody = mvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(usernamePasswordDto)))
+                .andReturn().getResponse().getContentAsString();
+
+        JwtResponseDto jwtResponseDto = objectMapper.createParser(responseBody).readValueAs(JwtResponseDto.class);
+        String jwtToken = jwtResponseDto.jwt();
+
+        mvc.perform(get("/api/solarwatch?city=Budapest")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void addCity_userLoggedInHasNoPermission_responseStatus403() throws Exception {
+        var usernamePasswordDto = new UserNamePasswordDto("Not Admin", "abcde");
+        when(fetcherMock.fetch(any(), eq(City[].class))).thenReturn(new City[]{new City()});
+        when(fetcherMock.fetch(any(), eq(SunsetSunriseFromApiCallDto.class))).thenReturn(new SunsetSunriseFromApiCallDto(new SunsetSunriseResultsDto("5:12:27 AM", "5:12:27 PM")));
+
+        mvc.perform(post("/api/registration")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(usernamePasswordDto)));
+
+        String responseBody = mvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(usernamePasswordDto)))
+                .andReturn().getResponse().getContentAsString();
+
+        JwtResponseDto jwtResponseDto = objectMapper.createParser(responseBody).readValueAs(JwtResponseDto.class);
+        String jwtToken = jwtResponseDto.jwt();
+
+        String jsonBody = """
+                {
+                    "name": "Hogwarts",
+                    "lon": 12.22,
+                    "lat": 13.33,
+                    "country": "UK",
+                    "state": null,
+                     "sunsetSunrises": []
+                }
+                """;
+
+        mvc.perform(post("/api/city")
+                    .header("Authorization", "Bearer " + jwtToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonBody))
+                .andExpect(status().isForbidden());
     }
 }

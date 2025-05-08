@@ -1,5 +1,6 @@
 package com.mecsbalint.solarwatch.service;
 
+import com.mecsbalint.solarwatch.controller.dto.CityDto;
 import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseDto;
 import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseNewDto;
 import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,8 +22,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SunsetSunriseServiceTest {
@@ -42,12 +43,6 @@ class SunsetSunriseServiceTest {
         sunsetSunriseService = new SunsetSunriseService(sunsetSunriseRepositoryMock, cityRepositoryMock);
     }
 
-    @AfterEach
-    public void resetMocks() {
-        reset(sunsetSunriseRepositoryMock);
-        reset(cityRepositoryMock);
-    }
-
     @Test
     public void addSunsetSunrise_cityNotExist_throwSettlementNotFoundException() {
         when(cityRepositoryMock.findCityById(anyLong())).thenReturn(null);
@@ -63,11 +58,22 @@ class SunsetSunriseServiceTest {
         assertThrows(SunriseSunsetAlreadyExistException.class, () -> sunsetSunriseService.addSunsetSunrise(sunsetSunriseNewDto));
     }
 
-    @Test void addSunsetSunrise_cityExistSunsetSunriseNotExist_throwNoException() {
-        when(cityRepositoryMock.findCityById(anyLong())).thenReturn(new City());
+    @Test void addSunsetSunrise_cityExistSunsetSunriseNotExist_throwNoExceptionAndSunsetSunriseSaved() {
+        City city = new City();
+        city.setId(sunsetSunriseNewDto.cityId());
+        when(cityRepositoryMock.findCityById(anyLong())).thenReturn(city);
         when(sunsetSunriseRepositoryMock.findSunsetSunriseByCityAndDate(any(), any())).thenReturn(null);
 
         assertDoesNotThrow(() -> sunsetSunriseService.addSunsetSunrise(sunsetSunriseNewDto));
+
+        ArgumentCaptor<SunsetSunrise> sunsetSunriseCaptor = ArgumentCaptor.forClass(SunsetSunrise.class);
+        verify(sunsetSunriseRepositoryMock, times(1)).save(sunsetSunriseCaptor.capture());
+
+        SunsetSunrise savedSunsetSunrise = sunsetSunriseCaptor.getValue();
+        assertEquals(sunsetSunriseNewDto.cityId(), savedSunsetSunrise.getCity().getId());
+        assertEquals(sunsetSunriseNewDto.date(), savedSunsetSunrise.getDate());
+        assertEquals(sunsetSunriseNewDto.sunrise(), savedSunsetSunrise.getSunrise());
+        assertEquals(sunsetSunriseNewDto.sunset(), savedSunsetSunrise.getSunset());
     }
 
     @Test
@@ -87,12 +93,19 @@ class SunsetSunriseServiceTest {
 
     @Test
     public void updateSunsetSunrise_cityAndSunsetSunriseExist_returnSunsetSunriseDto() {
-        when(cityRepositoryMock.findCityById(anyLong())).thenReturn(new City());
+        City city = new City();
+        city.setId(sunsetSunriseNewDto.cityId());
+        when(cityRepositoryMock.findCityById(anyLong())).thenReturn(city);
         when(sunsetSunriseRepositoryMock.existsById(anyLong())).thenReturn(true);
 
-        SunsetSunriseDto actualResult = sunsetSunriseService.updateSunsetSunrise(sunsetSunriseDto);
+        sunsetSunriseService.updateSunsetSunrise(sunsetSunriseDto);
 
-        assertEquals(SunsetSunriseDto.class, actualResult.getClass());
+        ArgumentCaptor<SunsetSunrise> sunsetSunriseCaptor = ArgumentCaptor.forClass(SunsetSunrise.class);
+        verify(sunsetSunriseRepositoryMock, times(1)).save(sunsetSunriseCaptor.capture());
+
+        SunsetSunrise updatedSunsetSunrise = sunsetSunriseCaptor.getValue();
+
+        assertEquals(sunsetSunriseDto, new SunsetSunriseDto(updatedSunsetSunrise));
     }
 
     @Test
@@ -104,12 +117,13 @@ class SunsetSunriseServiceTest {
 
     @Test
     public void deleteSunsetSunrise_sunsetSunriseExist_returnSunsetSunriseDto() {
+        long id = 1L;
         SunsetSunrise sunsetSunrise = new SunsetSunrise();
         sunsetSunrise.setCity(new City());
         when(sunsetSunriseRepositoryMock.findSunsetSunriseById(anyLong())).thenReturn(sunsetSunrise);
 
-        SunsetSunriseDto actualResult = sunsetSunriseService.deleteSunsetSunrise(1);
+        sunsetSunriseService.deleteSunsetSunrise(id);
 
-        assertEquals(SunsetSunriseDto.class, actualResult.getClass());
+        verify(sunsetSunriseRepositoryMock, times(1)).deleteById(id);
     }
 }
