@@ -2,8 +2,8 @@ package com.mecsbalint.solarwatch.service;
 
 import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
 import com.mecsbalint.solarwatch.model.City;
-import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseRecord;
-import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseResults;
+import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseFromApiCallDto;
+import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseResultsDto;
 import com.mecsbalint.solarwatch.repository.CityRepository;
 import com.mecsbalint.solarwatch.repository.SunsetSunriseRepository;
 import com.mecsbalint.solarwatch.utility.Fetcher;
@@ -39,7 +39,7 @@ class SolarWatchServiceTest {
     @Test
     void getSolarWatchModel_cityExist_returnSolarWatchModel() {
         when(fetcherMock.fetch(any(), eq(City[].class))).thenReturn(new City[]{new City()});
-        when(fetcherMock.fetch(any(), eq(SunsetSunriseRecord.class))).thenReturn(new SunsetSunriseRecord(new SunsetSunriseResults("5:12:27 AM", "5:12:27 PM")));
+        when(fetcherMock.fetch(any(), eq(SunsetSunriseFromApiCallDto.class))).thenReturn(new SunsetSunriseFromApiCallDto(new SunsetSunriseResultsDto("5:12:27 AM", "5:12:27 PM")));
 
         solarWatchService = new SolarWatchService(fetcherMock, cityRepository, sunsetSunriseRepository);
 

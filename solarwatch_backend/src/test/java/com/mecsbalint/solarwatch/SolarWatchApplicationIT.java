@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mecsbalint.solarwatch.controller.dto.JwtResponseDto;
 import com.mecsbalint.solarwatch.controller.dto.UserNamePasswordDto;
 import com.mecsbalint.solarwatch.model.City;
-import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseRecord;
-import com.mecsbalint.solarwatch.model.sunsetsunrise.SunsetSunriseResults;
+import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseFromApiCallDto;
+import com.mecsbalint.solarwatch.controller.dto.SunsetSunriseResultsDto;
 import com.mecsbalint.solarwatch.utility.Fetcher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +18,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
@@ -71,7 +69,7 @@ public class SolarWatchApplicationIT {
     public void getSolarWatchData_userLoggedInAndCityExists_responseStatus200() throws Exception {
         var usernamePasswordDto = new UserNamePasswordDto("User", "abcde");
         when(fetcherMock.fetch(any(), eq(City[].class))).thenReturn(new City[]{new City()});
-        when(fetcherMock.fetch(any(), eq(SunsetSunriseRecord.class))).thenReturn(new SunsetSunriseRecord(new SunsetSunriseResults("5:12:27 AM", "5:12:27 PM")));
+        when(fetcherMock.fetch(any(), eq(SunsetSunriseFromApiCallDto.class))).thenReturn(new SunsetSunriseFromApiCallDto(new SunsetSunriseResultsDto("5:12:27 AM", "5:12:27 PM")));
 
         mvc.perform(post("/api/registration")
                 .contentType(MediaType.APPLICATION_JSON)
