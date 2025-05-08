@@ -1,6 +1,5 @@
 package com.mecsbalint.solarwatch.controller;
 
-import com.mecsbalint.solarwatch.exceptions.MissingQueryParamException;
 import com.mecsbalint.solarwatch.controller.dto.SolarWatchDto;
 import com.mecsbalint.solarwatch.service.SolarWatchService;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +16,7 @@ public class SolarWatchController {
     }
 
     @GetMapping
-    public SolarWatchDto getSolarWatchDataForCity(@RequestParam(required = false) String city, @RequestParam(required = false) String date) {
-        if (city == null) throw new MissingQueryParamException();
+    public SolarWatchDto getSolarWatchDataForCity(@RequestParam String city, @RequestParam(required = false) String date) {
         LocalDate dateObj = date == null ? LocalDate.now() : LocalDate.parse(date);
 
         return solarWatchService.getSolarWatchData(city, dateObj);

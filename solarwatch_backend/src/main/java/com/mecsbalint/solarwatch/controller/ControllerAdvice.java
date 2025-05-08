@@ -12,13 +12,6 @@ import java.time.format.DateTimeParseException;
 public class ControllerAdvice {
 
     @ResponseBody
-    @ExceptionHandler(MissingQueryParamException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String missingQueryParameterHandler(MissingQueryParamException e) {
-        return e.getMessage();
-    }
-
-    @ResponseBody
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String invalidDateExceptionHandler() {

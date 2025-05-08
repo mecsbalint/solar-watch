@@ -2,12 +2,10 @@ package com.mecsbalint.solarwatch.controller;
 
 import com.mecsbalint.solarwatch.controller.dto.CityDto;
 import com.mecsbalint.solarwatch.service.CityService;
-import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/city")
