@@ -4,11 +4,12 @@ import com.mecsbalint.solarwatch.controller.dto.CityDto;
 import com.mecsbalint.solarwatch.exceptions.SettlementAlreadyExistException;
 import com.mecsbalint.solarwatch.exceptions.SettlementNotFoundException;
 import com.mecsbalint.solarwatch.model.City;
+import com.mecsbalint.solarwatch.model.SunsetSunrise;
 import com.mecsbalint.solarwatch.repository.CityRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -18,8 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CityServiceTest {
@@ -39,18 +39,22 @@ class CityServiceTest {
         cityService = new CityService(cityRepositoryMock, sunsetSunriseServiceMock);
     }
 
-    @AfterEach
-    public void resetMocks() {
-        reset(cityRepositoryMock);
-        reset(sunsetSunriseServiceMock);
-    }
-
     @Test
-    public void addCity_cityNotExistYet_noExceptionThrown() {
+    public void addCity_cityNotExistYet_noExceptionThrownAndCitySaved() {
         when(cityRepositoryMock.findCityByName(anyString())).thenReturn(null);
-        when(sunsetSunriseServiceMock.generateSunsetSunriseFromSunsetSunriseDto(any(), any())).thenReturn(null);
 
         assertDoesNotThrow(() -> cityService.addCity(cityDto));
+
+        ArgumentCaptor<City> cityCaptor = ArgumentCaptor.forClass(City.class);
+        verify(cityRepositoryMock, times(1)).save(cityCaptor.capture());
+
+        City savedCity = cityCaptor.getValue();
+        assertEquals(cityDto.name(), savedCity.getName());
+        assertEquals(cityDto.lat(), savedCity.getLat());
+        assertEquals(cityDto.lon(), savedCity.getLon());
+        assertEquals(cityDto.country(), savedCity.getCountry());
+        assertEquals(cityDto.state(), savedCity.getState());
+        assertEquals(cityDto.sunsetSunrises().stream().map(sunsetSunriseDto -> new SunsetSunrise()).toList(), savedCity.getSunsetSunrises());
     }
 
     @Test
@@ -67,9 +71,15 @@ class CityServiceTest {
         city.setSunsetSunrises(List.of());
         when(cityRepositoryMock.save(any())).thenReturn(city);
 
-        CityDto actualResult = cityService.updateCity(cityDto);
+        cityService.updateCity(cityDto);
 
-        assertEquals(CityDto.class, actualResult.getClass());
+        ArgumentCaptor<City> cityCaptor = ArgumentCaptor.forClass(City.class);
+        verify(cityRepositoryMock, times(1)).save(cityCaptor.capture());
+
+        City updatedCity = cityCaptor.getValue();
+
+        assertEquals(cityDto, new CityDto(updatedCity));
+
     }
 
     @Test
@@ -80,14 +90,15 @@ class CityServiceTest {
     }
 
     @Test
-    public void deleteCity_cityExist_returnCityDto() {
+    public void deleteCity_cityExist_callDeleteByNameMethodWithCityName() {
         City city = new City();
         city.setSunsetSunrises(List.of());
+        String cityName = "city name";
         when(cityRepositoryMock.findCityByName(anyString())).thenReturn(city);
 
-        CityDto actualResult = cityService.deleteCity("city name");
+        cityService.deleteCity(cityName);
 
-        assertEquals(CityDto.class, actualResult.getClass());
+        verify(cityRepositoryMock, times(1)).deleteByName(cityName);
     }
 
     @Test

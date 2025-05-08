@@ -88,7 +88,7 @@ public class SunsetSunriseService {
         sunsetSunrise.setCity(city);
         sunsetSunrise.setDate(sunsetSunriseDto.date());
         sunsetSunrise.setSunrise(sunsetSunriseDto.sunrise());
-        sunsetSunrise.setSunset(sunsetSunriseDto.sunrise());
+        sunsetSunrise.setSunset(sunsetSunriseDto.sunset());
 
         return sunsetSunrise;
     }

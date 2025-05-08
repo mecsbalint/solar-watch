@@ -22,11 +22,6 @@ class SolarWatchServiceTest {
     private final CityRepository cityRepository = mock(CityRepository.class);
     private final SunsetSunriseRepository sunsetSunriseRepository = mock(SunsetSunriseRepository.class);
 
-    @AfterEach
-    public void resetMocks() {
-        reset(fetcherMock);
-    }
-
     @Test
     void getSolarWatchModel_cityNotExist_throwSettlementNotFoundException() {
         when(fetcherMock.fetch(any(), any())).thenReturn(new City[]{});
