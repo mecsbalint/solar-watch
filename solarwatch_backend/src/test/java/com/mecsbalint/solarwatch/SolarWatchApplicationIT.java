@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = SolarWatchApplication.class, webEnvironment = WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:application-integrationtest.properties", properties = "GEOCODING_KEY=nothing")
+@TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class SolarWatchApplicationIT {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
