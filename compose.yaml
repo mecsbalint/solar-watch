@@ -3,8 +3,8 @@ services:
   db:
     image: 'postgres:latest'
     environment:
-      - POSTGRES_USER=compose-postgres
-      - POSTGRES_PASSWORD=compose-postgres
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=compose-postgres
     volumes:
       - ./data:/var/lib/postgresql/data
@@ -23,12 +23,12 @@ services:
         condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/compose-postgres
-      - SPRING_DATASOURCE_USERNAME=compose-postgres
-      - SPRING_DATASOURCE_PASSWORD=compose-postgres
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - GEOCODING_KEY=${GEOCODING_API_KEY}
-      - MECSBALINT_APP_JWTSECRET=${DEFAULT_JWT_SECRET}
-      - MECSBALINT_APP_JWTEXPIRATIONMS=${DEFAULT_JWT_EXPIRATION_MS}
+      - MECSBALINT_APP_JWTSECRET=${JWT_SECRET}
+      - MECSBALINT_APP_JWTEXPIRATIONMS=${JWT_EXPIRATION_MS}
 
   frontend:
     build: 
@@ -36,4 +36,4 @@ services:
     depends_on:
       - backend
     ports:
-      - 5173:80
+      - ${PORT_NUMBER}:80

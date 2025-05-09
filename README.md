@@ -1,57 +1,95 @@
+# Solar Watch
 
-<!-- Title -->
-<div align="center">
-    <img src="readme_resources/screenshot_01.png">
-    <h2 align="center">Solar Watch</h2>
-    <p align="center">
-        Full-stack web application to show sunrise and sunset information about cities
-    </p>
-</div>
+## About the Project
 
-<br>
+[![Solar Watch Screen Shot][screenshot]](https://example.com)
 
-<!-- About the Project -->
-<div>
-    <h4>Features</h4>
-    <p>
-    Built in React and Spring MVC, Solar Watch is a web app that displays sunrise and sunset times for any given city and date.
-    </p>
-    <ul>
-        <li>Sunrise and Sunset Times: Users can input a city and date to retrieve the corresponding sunrise and sunset times.
-        <li>User Authentication: The application likely includes user registration and login functionalities to personalize the experience.
-        <li>City Management: Users may have the ability to save preferred cities for quicker access to solar data.
-        <li>Admin Controls: Administrators could have additional capabilities, such as managing user accounts and overseeing city data (Backend only).
-    </ul>
-</div>
+The "Solar Watch" project is a full-stack web application developed as part of a Codecool assignment. It enables users to retrieve sunrise and sunset times for selected cities on specific dates. The backend is built with Java and Spring Boot, while the frontend utilizes JavaScript, all containerized using Docker for streamlined deployment.
 
-<br>
 
-<!-- Built with -->
-<div>
-    <h4>Built with</h4>
-    <p>Node.js, React, Tailwind css, DaisyUI, Maven, Java Spring, JUnit, Lombok, PostgreSQL
-</div>
+### Core Features
 
-<br>
+* **Sunrise and Sunset Times:** Users can input a city and date to retrieve the corresponding sunrise and sunset times.
+* **User Authentication:** The application includes user registration and login functionalities to personalize the experience.
+* **Admin Controls:** Administrators have additional capabilities, such as managing city data (Backend only).
+* **Dockerization:** The application is fully containerized using Docker.
+* **Backend Tests:** Unit tests cover the business logic of the Backend side of the application and there are integration tests ensuring system reliability.
 
-<!-- Prerequisites -->
-<div>
-    <h4>Prerequisites</h4>
-    <p>For Docker: <a href="https://www.docker.com/products/docker-desktop/">Docker desktop</a>
-</div>
 
-<br>
+### Built with
 
-<!-- How to run -->
-<div>
-    <h4>How to run</h4>
-    <h6>With Docker</h6>
-    <ol>
-        <li>Download, install and run <a href="https://www.docker.com/products/docker-desktop/">Docker desktop</a>
-        <li>Rename .env.example to .env in the root directory
-        <li>Fill up .env with the necessary data
-        <li>Run docker-start.bat
-        <li><a href="http://localhost:5173/solarwatch">Click here</a>
-        <li>To stop run docker-stop.bat
-    </ol>
-</div>
+* [![Node.js][Node-ico]][Node-url]
+* [![React][React-ico]][React-url]
+* [![Tailwind css][Tailwind-ico]][Tailwind-url]
+* [![DaisyUI][DaisyUI-ico]][DaisyUI-url]
+* [![Maven][Maven-ico]][Maven-url]
+* [![Java Spring][JavaSpring-ico]][JavaSpring-url]
+* [![JUnit][JUnit-ico]][JUnit-url]
+* [![PostgreSQL][PostgreSQL-ico]][PostgreSQL-url]
+
+
+## Getting Started
+
+#### About Geocoding API key
+
+To use this application you will need an API key from the Openweathermar.org website. For the details see for [Openweather Geocoding API page][Openweathermap-API]. This key has to be set up in different ways depensing on the way you want to run the application (see the next sections).
+
+#### Download app
+
+You can download the application here: [Solar Watch GitHub page](https://github.com/mecsbalint/solar-watch). Click on the Code button and choose the Download ZIP option. After downloading unzip it.
+Or alternatively clone the repository: ```git clone https://github.com/mecsbalint/solar-watch.git```
+
+### With Docker
+#### Prerequisites
+
+* **Docker Desktop:** You can download from here: [Docker Desktop][Docker-Desktop]. You have to sign up to use the Docker Desktop app.
+
+#### Set Up and Run
+1. **Install and Run Docker Desktop:** Download and run the installation file and follow the steps. After installation run the Docker Desktop application.
+2. **Set up .env file**
+    1. Rename the `.env.example` file to `.env` in the app's root folder
+    2. Add the personal Geocoding API key to the `GEOCODING_API_KEY` variable as value. For example: `GEOCODING_API_KEY=your_api_key_here`
+    3. Optionally you can change the JWT secret key, the JWT expiration time, the database' username or password or the port number (for more details see [.env.example](https://github.com/mecsbalint/solar-watch/blob/main/.env.example))
+3. **Start the Application:** Run the `docker-start.bat` batch file from the application's root folder.
+4. **Access the Application:** Open a web browser and go to `http://localhost:` + `PORT_NUMBER` to access the frontend (by default it's `https://localhost:5173`). The port number can be changed in the `.env.example` file.
+5. **Stop the application:** Run the `docker-stop.bat` batch file from the application's root folder.
+
+### Manual Setup (Without Docker)
+#### Prerequisites
+#### Installation
+
+## Contact
+
+mecsbalint@gmail.com - https://github.com/mecsbalint
+
+
+<!-- Links -->
+[Openweathermap-API]: https://openweathermap.org/api/geocoding-api
+
+[Docker-Desktop]: https://www.docker.com/products/docker-desktop/
+
+[screenshot]: readme_resources/screenshot_01.png
+
+[Node-ico]: https://img.shields.io/badge/Node.js-35495E?style=for-the-badge&logo=node.js
+[Node-url]: https://nodejs.org/
+
+[React-ico]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react
+[React-url]: https://reactjs.org/
+
+[Tailwind-ico]: https://img.shields.io/badge/Tailwind-35495E?style=for-the-badge&logo=tailwindcss
+[Tailwind-url]: https://tailwindcss.com/
+
+[DaisyUI-ico]: https://img.shields.io/badge/DaisyUI-DD0031?style=for-the-badge&logo=daisyui
+[DaisyUI-url]: https://daisyui.com/
+
+[Maven-ico]: https://img.shields.io/badge/Maven-0769AD?style=for-the-badge&logo=apachemaven
+[Maven-url]: https://maven.apache.org/
+
+[JavaSpring-ico]: https://img.shields.io/badge/Spring-FF2D20?style=for-the-badge&logo=spring
+[JavaSpring-url]: https://spring.io/
+
+[JUnit-ico]: https://img.shields.io/badge/JUnit-563D7C?style=for-the-badge&logo=junit5
+[JUnit-url]: https://junit.org/junit5/
+
+[PostgreSQL-ico]: https://img.shields.io/badge/PostgreSQL-4A4A55?style=for-the-badge&logo=postgresql
+[PostgreSQL-url]: https://www.postgresql.org/
