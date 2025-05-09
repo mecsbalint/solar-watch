@@ -51,12 +51,34 @@ Or alternatively clone the repository: ```git clone https://github.com/mecsbalin
     2. Add the personal Geocoding API key to the `GEOCODING_API_KEY` variable as value. For example: `GEOCODING_API_KEY=your_api_key_here`
     3. Optionally you can change the JWT secret key, the JWT expiration time, the database' username or password or the port number (for more details see [.env.example](https://github.com/mecsbalint/solar-watch/blob/main/.env.example))
 3. **Start the Application:** Run the `docker-start.bat` batch file from the application's root folder.
-4. **Access the Application:** Open a web browser and go to `http://localhost:` + `PORT_NUMBER` to access the frontend (by default it's `https://localhost:5173`). The port number can be changed in the `.env.example` file.
+4. **Access the Application:** Open a web browser and go to `http://localhost:` + `PORT_NUMBER` to access the frontend (by default it's `http://localhost:5173`). The port number can be changed in the `.env.example` file.
 5. **Stop the application:** Run the `docker-stop.bat` batch file from the application's root folder.
 
 ### Manual Setup (Without Docker)
 #### Prerequisites
+
+* **Java Development Kit** 21 or above [Download](https://www.oracle.com/java/technologies/downloads/)
+* **Apache Maven** [Download](https://maven.apache.org/download.cgi)
+* **Node.js** [Download](https://nodejs.org/en/download)
+* **PostgreSQL** [Download](https://www.postgresql.org/download/)
+
 #### Installation
+
+1. **Set up PostgreSQL Database**
+    1. Create a database dedicated to this application ([step-by-step guide](https://www.postgresql.org/docs/current/tutorial-createdb.html))
+    2. Replace the `spring.datasource.url`, `spring.datasource.username` and `spring.datasource.password` variables' value with your database' properties in the `\solarwatch_backend\src\main\resources\application.properties` file.
+2. **Set up, Build and Run Spring Boot Backend**
+    1. Replace the `mecsbalint.app.geocodingApiKey` variable's value with your personal Geocoding API key and set up the `mecsbalint.app.jwtExpirationMs` and `mecsbalint.app.jwtSecret` variables in the `\solarwatch_backend\src\main\resources\application.properties` file.
+    2. Open a terminal and navigate to the `\solarwatch_backend` folder
+    3. Run the `./mvnw clean package` command (build the backend application with Maven).
+    4. Run the `./mvnw spring-boot:run` command (run the backend application).
+3. **Install dependencies and Run the React Frontend**
+    1. Open a terminal and navigate to the `\solarwatch_frontend` folder
+    2. Run the `npm install` command (install dependencies)
+    3. Run the `npm run dev` command (run the frontend application)
+4. **Access the Application**
+    1. Click on the `Local` link in the terminal where the frontend is running.
+
 
 ## Contact
 

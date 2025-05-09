@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class SolarWatchService {
     private static final Logger logger = LoggerFactory.getLogger(SolarWatchService.class);
 
-    @Value("${GEOCODING_KEY}")
+    @Value("${mecsbalint.app.geocodingApiKey}")
     private String API_KEY;
 
     private final Fetcher fetcher;
