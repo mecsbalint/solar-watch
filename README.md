@@ -70,8 +70,8 @@ Or alternatively clone the repository: ```git clone https://github.com/mecsbalin
 2. **Set up, Build and Run Spring Boot Backend**
     1. Replace the `mecsbalint.app.geocodingApiKey` variable's value with your personal Geocoding API key and set up the `mecsbalint.app.jwtExpirationMs` and `mecsbalint.app.jwtSecret` variables in the `\solarwatch_backend\src\main\resources\application.properties` file.
     2. Open a terminal and navigate to the `\solarwatch_backend` folder
-    3. Run the `./mvnw clean package` command (build the backend application with Maven).
-    4. Run the `./mvnw spring-boot:run` command (run the backend application).
+    3. Run the `mvnw clean package` command (build the backend application with Maven).
+    4. Run the `mvnw spring-boot:run` command (run the backend application).
 3. **Install dependencies and Run the React Frontend**
     1. Open a terminal and navigate to the `\solarwatch_frontend` folder
     2. Run the `npm install` command (install dependencies)
